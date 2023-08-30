@@ -3,22 +3,30 @@ using System.Data.SqlClient;
 
 namespace sqlapp.Services
 {
-    public class ProductService
+    public class ProductService : IProductService
     {
 
-        private static string db_source = "azin.database.windows.net";
-        private static string db_user = "sqladmin";
-        private static string db_password = "Meherremyek1";
-        private static string db_database = "appdb";
+        //private static string db_source = "azin.database.windows.net";
+        //private static string db_user = "sqladmin";
+        //private static string db_password = "Meherremyek1";
+        //private static string db_database = "appdb";
+
+        private readonly IConfiguration _configuration;
+        public ProductService(IConfiguration configuration)
+        {
+            _configuration = configuration;
+        }
 
         private SqlConnection GetConnection()
         {
-            var _builder = new SqlConnectionStringBuilder();
-            _builder.DataSource = db_source;
-            _builder.UserID = db_user;
-            _builder.Password = db_password;
-            _builder.InitialCatalog = db_database;
-            return new SqlConnection(_builder.ConnectionString);
+            //var _builder = new SqlConnectionStringBuilder();
+            //_builder.DataSource = db_source;
+            //_builder.UserID = db_user;
+            //_builder.Password = db_password;
+            //_builder.InitialCatalog = db_database;
+            //return new SqlConnection(_builder.ConnectionString);
+
+            return new SqlConnection(_configuration.GetConnectionString("SQLConnection"));
         }
 
         public List<Product> GetProducts()
@@ -28,7 +36,7 @@ namespace sqlapp.Services
             string statement = "select ProductID, ProductName, Quantity from Products";
             conn.Open();
             SqlCommand cmd = new SqlCommand(statement, conn);
-            using(SqlDataReader reader = cmd.ExecuteReader())
+            using (SqlDataReader reader = cmd.ExecuteReader())
             {
                 while (reader.Read())
                 {
